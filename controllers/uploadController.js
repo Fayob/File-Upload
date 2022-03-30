@@ -8,7 +8,22 @@ const uploadProductImage = async (req, res) => {
   // check format
   // check size
 
-  let productImage = req.files.image;
+  if (!req.files) {
+    throw new CustomError.BadRequestError("No File Uploaded");
+  }
+  const productImage = req.files.image;
+
+  if (!productImage.mimetype.startsWith("image")) {
+    throw new CustomError.BadRequestError("Please Upload an Image");
+  }
+
+  const maxSize = 10000;
+
+  if (productImage.size > maxSize) {
+    throw new CustomError.BadRequestError(
+      "Please upload an image smaller than 10KB"
+    );
+  }
 
   const imagePath = path.join(
     __dirname,
