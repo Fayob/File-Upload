@@ -4,17 +4,29 @@ require("express-async-errors");
 const express = require("express");
 const app = express();
 
+const fileUpload = require("express-fileupload");
+
 // database
 const connectDB = require("./db/connect");
+
+// product router
+const productRouter = require("./routes/productsRoutes");
 
 // error handler
 const notFoundMiddleWare = require("./middleware/not_found");
 const errorHandlerMiddleWare = require("./middleware/error-handler");
 
+app.use(express.static("./public"));
+app.use(express.json());
+app.use(fileUpload());
+
 app.get("/", (req, res) => {
   res.send("<h1> File Upload Starts here </h1>");
 });
 
+app.use("/api/v1/products", productRouter);
+
+// middleware
 app.use(notFoundMiddleWare);
 app.use(errorHandlerMiddleWare);
 
