@@ -2,8 +2,9 @@ const path = require("path");
 
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../error-handlers");
+const cloudinary = require("cloudinary").v2;
 
-const uploadProductImage = async (req, res) => {
+const uploadProductImageLocal = async (req, res) => {
   // check if file exist
   // check format
   // check size
@@ -33,6 +34,19 @@ const uploadProductImage = async (req, res) => {
   return res
     .status(StatusCodes.OK)
     .json({ image: { src: `/uploads/${productImage.name}` } });
+};
+
+const uploadProductImage = async (req, res) => {
+  // console.log(req.files);
+  const result = await cloudinary.uploader.upload(
+    req.files.image.tempFilePath,
+    {
+      use_filename: true,
+      folder: "file-upload",
+    }
+  );
+  console.log(result);
+  // return res.status(StatusCodes.OK).json({ image: {src:result.secure_url}})
 };
 
 module.exports = {
